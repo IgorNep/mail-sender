@@ -6,6 +6,8 @@ const path = require('path');
 
 const PORT = 5000;
 
+const sendMail = require('./mail');
+
 //Chunk 2
 //Data parsing
 
@@ -20,7 +22,15 @@ app.post('/email', (req, res) => {
   //@TODO
   //send email here
   console.log('Data: ', req.body);
-  res.json({ message: 'Message Received!!!' });
+
+  const { email, subject, text } = req.body;
+  sendMail(email, subject, text, function (err, data) {
+    if (err) {
+      res.status(500).json({ msg: 'Server Error' });
+    } else {
+      res.json({ msg: 'Email Sent!' });
+    }
+  });
 });
 
 app.get('/', (req, res) => {
